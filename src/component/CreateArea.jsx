@@ -1,16 +1,22 @@
 import React, { useState } from "react";
+import AddIcon from '@mui/icons-material/Add';
+import { Fab } from "@mui/material";
+import { Zoom } from '@mui/material';
+
+
 
 function CreateArea(props) {
 
+    const [isExpand, setExpand] = useState(false);
+
     const [note, setNote] = useState({
-        title : [""],
-        content : [""]
-    })
-
-
+        title: "",
+        content: ""
+    });
 
     function handleChange(event) {
         const { name, value } = event.target;
+
         setNote(prevNote => {
             return {
                 ...prevNote,
@@ -18,34 +24,46 @@ function CreateArea(props) {
             };
         });
     }
-    
-    function submitNote(event){
+
+    function submitNote(event) {
         if(note.title != "" || note.content != "")
-            props.onAdd(note)
-        event.preventDefault();
+            props.onAdd(note);
         setNote({
-            title : "",
-            content : ""
-        })
+            title: "",
+            content: ""
+        });
+        event.preventDefault();
+    }
+
+    function expand(){
+        setExpand(true)
     }
 
     return (
         <div>
-            <form>
-                <input
+            <form className="create-note">
+                {isExpand ?
+                    <input
                     name="title"
                     onChange={handleChange}
                     value={note.title}
                     placeholder="Title"
-                />
+                    />
+                    : null
+                }
                 <textarea
                     name="content"
+                    onClick={expand}
                     onChange={handleChange}
                     value={note.content}
                     placeholder="Take a note..."
-                    rows="3"
+                    rows= {isExpand ? "3" : "1"}
                 />
-                <button onClick={submitNote}>Add</button>
+                <Zoom in = {isExpand}>
+                    <Fab onClick={submitNote} color="primary" aria-label="add">
+                        <AddIcon />
+                    </Fab>
+                </Zoom>
             </form>
         </div>
     );
